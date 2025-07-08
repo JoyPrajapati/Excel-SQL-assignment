@@ -24,7 +24,7 @@ VALUES
 (110, 'Cognizant India', 'Kolkata', 'WB');
 
 select * from Company;
-
+###*******************************************************###
 Create table Contact(
 
 	Contact_ID INT,
@@ -50,7 +50,7 @@ VALUES
 (10, 110, 'Divya', 'Nair', 'Thiruvananthapuram', 'KL', 'divya.nair@example.com', '9898989898');
 
 select*from Contact;
-
+###*******************************************************###
     Create table Employee(
     Employee_ID INT,
     First_Name varchar(45),
@@ -98,9 +98,48 @@ VALUES
 
 select * from Contact_Employee;
     
-### CHANGE RAVI KUMAR'S NUMBER TO 9325729348 ###
+### CHANGE RAVI KUMAR'S NUMBER TO 9326729348 ###
 
 SET SQL_SAFE_UPDATES =0;
+
+### USING RECURSIVE METHOD ###
+
+ -- Update in employee table
+UPDATE employee
+SET phone = '9326729348'
+WHERE first_name = 'Ravi' AND last_name = 'Kumar';
+
+-- Update in contact table
+UPDATE contact
+SET phone = '9326729348'
+WHERE first_name = 'Ravi' AND last_name = 'Kumar';
+
+### USING JOINS ###
+
+update employee
+JOIN contact c 
+on e.first_name=c.first_name
+and e.last_name=c.last_name
+and c.first_name='Ravi'
+and c.last_name='Kumar'
+SET e.Phone = '9326729348';
+
+UPDATE contact c
+LEFT JOIN employee e
+  ON c.first_name = e.first_name AND c.last_name = e.last_name
+SET c.phone = '9325729348'
+WHERE c.first_name = 'Ravi' AND c.last_name = 'Kumar';
+
+
+UPDATE employee e
+LEFT JOIN contact c
+  ON e.first_name = c.first_name AND e.last_name = c.last_name
+SET e.phone = '9325729348'
+WHERE e.first_name = 'Ravi' AND e.last_name = 'Kumar';
+
+select * from employee;
+select * from contact;
+
 
 update Employee
 set Phone=9325729348
@@ -112,12 +151,25 @@ select * from Employee;
 
 update Company
 set Company_Name='Hexaware Technologies'
-WHERE Company_ID =104;
+WHERE Company_Name ='Tech Mahindra';
 
 select * from Company;
 
-
 ### REMOVE Sneha rao's contact Event with Divya Menon ###
+
+SELECT * FROM Employee;
+SELECT * FROM Contact;
+select * from Contact_Employee;
+
+-- CHECK 
+SELECT * FROM Contact_Employee ce
+        JOIN Contact c ON ce.Contact_ID = c.Contact_ID
+        JOIN Employee e ON ce.Employee_ID = e.Employee_ID
+        WHERE c.First_Name = 'Karan' AND c.Last_Name = 'Singh'
+          AND e.First_Name = 'Manish' AND e.Last_Name = 'Jain'
+          LIMIT 1;
+
+-- MAIN QUERY
 
 DELETE FROM Contact_Employee
 WHERE Contact_Employee_ID IN (
@@ -126,16 +178,27 @@ WHERE Contact_Employee_ID IN (
         FROM Contact_Employee ce
         JOIN Contact c ON ce.Contact_ID = c.Contact_ID
         JOIN Employee e ON ce.Employee_ID = e.Employee_ID
-        WHERE c.First_Name = 'Sneha' AND c.Last_Name = 'Rao'
-          AND e.First_Name = 'Divya' AND e.Last_Name = 'Menon'
+        WHERE c.First_Name = 'Karan' AND c.Last_Name = 'Singh'
+          AND e.First_Name = 'Manish' AND e.Last_Name = 'Jain'
         LIMIT 1
-    ) AS temp
-);
+        ) AS temp);
 
-SELECT * FROM Employee;
-SELECT * FROM Contact;
-select * from Contact_Employee;
+-- OR 
 
-	
+DELETE ce FROM Contact_Employee ce
+JOIN contact c ON ce.Contact_ID = c.Contact_ID
+JOIN employee e ON ce.Employee_ID = e.Employee_ID
+WHERE c.First_Name = 'Karan' AND c.Last_Name = 'Singh'
+AND e.First_Name = 'Manish' AND e.Last_Name = 'Jain';
 
+
+
+###Write the SQL SELECT query that displays the names of the employees that have contacted Toll Brothers (one statement).
+
+SELECT DISTINCT e.first_name, e.last_name
+FROM Employee e
+JOIN Contact_Employee ce ON e.Employee_id = ce.Employee_id
+JOIN Contact c ON ce.Contact_id = c.Contact_id
+JOIN Company co ON c.Company_id = co.Company_id
+WHERE co.Company_name = 'Tata Consultancy';
 
